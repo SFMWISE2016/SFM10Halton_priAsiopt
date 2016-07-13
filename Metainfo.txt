@@ -1,0 +1,26 @@
+Name of Quantlet: SFM10Halton_priAsiopt
+
+Published in: Statistics of Financial Markets
+
+Description: 'Generates and plots multiple asset paths and prices Asian Call and Put options by applying the random numbers generated from the Halton sequence '
+
+Keywords: 'plot, graphical representation, simulation, option-price, call, put, random-number-generation, geometric-brownian-motion, monte-carlo '
+
+Author: Xu Yunkun 
+Author[Matlab]: Chai Qingqing
+
+Submitted:  2016/07/13
+
+Input: 
+-S0: price of underlying today
+-mu: expected return
+-sig: volatility
+-dt: size of time steps
+-steps: number of time steps to calculate
+-nsims: number of simulation paths to generate
+-X: strike at expiry
+-r: risk free rate
+
+Output: 'plot of simulated asset paths and prices of Asian Call and Put options'
+
+
