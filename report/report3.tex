@@ -1,0 +1,181 @@
+\documentclass[a4 paper, 12pt]{article}
+\usepackage[colorlinks,linkcolor=blue]{hyperref}
+\usepackage{CJK}
+\usepackage{amsmath} 
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{mathrsfs}
+\usepackage{threeparttable}
+\usepackage{dcolumn}
+\usepackage{caption} %给表格和图编号。上下标题
+\usepackage{multirow} %做复杂表格
+\usepackage{float} %插图片到你代码相应的位置
+\usepackage{txfonts} %设置字体为times new Roman
+\usepackage{graphicx} % Required for including pictures
+\usepackage{geometry} %自由设置上下左右的页边距
+\geometry{left=3.18cm,right=3.18cm,top=2.54cm,bottom=2.54cm}
+\usepackage[T1]{fontenc} % Required for accented characters
+\linespread{2} % Change line spacing here, Palatino benefits from a slight increase by default 设置行间距
+\usepackage{indentfirst} %段首空两个字符
+\usepackage{xcolor}
+\title{Pricing an Asian Option by Applying the Random Numbers Generated from the Halton Sequence}
+\author{SFM.Group10}
+\begin{document}
+\maketitle % Print the title section
+        \tableofcontents
+        \newpage
+\section{Monte-Carlo methods}
+\subsection{Introduction}
+Monte Carlo methods are a broad class of computational algorithms that rely on repeated random sampling to obtain numerical results.The modern version of the Markov Chain Monte Carlo method was invented in the late 1940s by Stanislaw Ulam.Their essential idea is using randomness to solve problems that might be deterministic in principle. In principle, Monte Carlo methods can be used to solve any problem having a probabilistic interpretation. By the law of large numbers, integrals described by the expected value of some random variable can be approximated by taking the empirical mean (a.k.a. the sample mean) of independent samples of the variable.
+
+\subsection{Monte Carlo Methods for Option Pricing}
+A three-step approach to pricing an option by Monte Carlo method is :
+\begin{itemize}
+       \item Generate a large number of possible (but random) price paths for the underlying (or underlyings) via simulation,
+       \item Calculate the associated exercise value (i.e. "payoff") of the option for each path.
+       \item Discount the payoffs back to today and average them to determine the expected price
+\end{itemize}
+\section{Halton Sequence}
+\subsection{Introduction}
+In statistics, Halton sequences are sequences used to generate points in space for numerical methods such as Monte Carlo simulations.Halton's sequence is one of several available low discrepancy sequences. If n is an integer in base 10 (i.e. decimal notation) then it may be written in base b as
+\begin{equation*}
+  n=\sum_{k=0}^{m}d_k b^k,\quad where \quad d_k= 1\quad or \quad 0.
+\end{equation*}
+Then the \textbf{$n^{th}$} number in the Halton sequence of base b is given by
+\begin{equation*}
+  h(n,b)=\sum_{k=0}^{m}d_{k}b^{-(k+1)},\quad where \quad d_k= 1\quad or \quad 0.
+\end{equation*}
+\subsection{Example}\textbf{\textsf{Example 1 : Generate the Halton Sequence of base 2}}.
+
+We start by dividing the interval (0,1) in half, then in fourths, eighths, etc., which generates
+\begin{displaymath}
+\frac{1}{2} ,\quad \frac{1}{4}, \quad\frac{3}{4},\quad\frac{1}{8},\quad\frac{5}{8},\quad\frac{3}{8},\quad\frac{7}{8},\quad\frac{1}{16},\quad\frac{9}{16},\quad...
+\end{displaymath}
+\section{Asian Options}
+\subsection{Definition of Asian Option}
+\textbf{Definition}:An Asian option (or average value option ) is one of the basic forms of exotic options. For Asian options, the payoff is determined by the average underlying price over some pre-set period of time rather than the price of the underlying instrument at exercise.
+\subsection{Pricing Models}
+\textsf{Asian options are priced according to the following models:}
+\begin{itemize}
+  \item Fixed strike Asian call/put payoff
+  \begin{eqnarray*}
+  % \nonumber % Remove numbering (before each equation)
+    C(T)&=& \max(A(0,T)-K,0)\\
+    P(T)&=& \max(K-A(0,T),0)
+  \end{eqnarray*}
+  \item Floating strike Asian call/put option
+  \begin{eqnarray*}
+  % \nonumber % Remove numbering (before each equation)
+    C(T) &=& \max(S(T)-kA(0,T),0); \\
+    P(T) &=& \max(kA(0,T)-S(T),0)
+  \end{eqnarray*}
+\end{itemize}
+     where, %\footnotesize{, 再两个quad后;\quad\quad\quad
+     \textit{A} means Average price at [0, T];\textit{K} means Strike price; \textit{S(T)} means Price at maturity; \textit{k} means Weighting.
+
+Further more, we can compute average price A using the following models:
+\begin{itemize}
+  \item The continuous case
+  \begin{equation*}
+   A(0,T)=\frac{1}{T}\int_{0}^{T}S(t)dt
+ \end{equation*}
+  \item The discrete monitoring case
+  \begin{equation*}
+    A(0,T)=\frac{1}{n}\sum_{i=0}^{n-1}S(t_i)
+  \end{equation*}
+  \item The geometric average in the continuous case
+  \begin{equation*}
+    A(0,T)= \exp\bigg(\frac{1}{T}\int_{0}^{T}\ln(S(t))dt\bigg)
+  \end{equation*}
+\end{itemize}
+
+\subsection{A Specific Case}
+Consider an Asian Option with a payoff given by:
+\begin{eqnarray*}
+% \nonumber % Remove numbering (before each equation)
+  Payof{}f_{call} &=& \max (S-X,0) \\
+  Payof{}f_{put} &=& \max(X-S,0)
+\end{eqnarray*}
+where S is the average value of the asset price over the life of the option and X is the strike.\textbf{ Then how to price the above Asian option?}
+\section{Application \& Results}
+\subsection{Procedures}
+Procedures to Pricing an Asian Option Using Halton Sequence:
+
+\textbf{Step 1}: Generate the Halton sequence. %缩进问题
+
+\textbf{Step 2}: Transform the Halton sequence that might appear to be derived from a uniform distribution to a normal distribution series by using the Box-Muller transformation.
+Assume X and Y are two independent random samples on the interval (0,1] then,
+\begin{eqnarray*}
+% \nonumber % Remove numbering (before each equation)
+  P &=& R\cos\Theta \\
+  Q &=& R\sin\Theta ;
+\end{eqnarray*}
+\textsf{where,}
+\begin{eqnarray*}
+% \nonumber % Remove numbering (before each equation)
+  R &=& -2\ln(X) \\
+  \Theta &=& 2\pi Y
+\end{eqnarray*}
+may be treated as samples from a normal distribution.
+
+\textbf{Step 3}: Simulating Asset Paths. Assuming the asset follows the standard geometric Brownian motion model,\\
+\begin{equation}
+  S(\Delta t)=S(0)\exp [(\mu-\frac{\sigma^2}{2})\Delta t+(\sigma \sqrt{\Delta t})\varepsilon ]
+\end{equation}
+where,
+\begin{itemize}
+  \item $S(0)$: The stock price today;
+  \item $S(\Delta t)$: The stock price at a (small) time into the future;
+  \item $\Delta t $: A small increment of time;
+  \item $\mu$: The expected return;
+  \item $\sigma$: The expected volatility;
+  \item $\varepsilon$: A (random) number sampled from a standard normal distribution.
+\end{itemize}
+Repeated use of (1) allows multiple potential future asset paths (between now and expiry) to be generated .An example of 1000 such paths is given in Figure 1:
+\begin{figure} %图片的位置
+  \centering
+  \includegraphics[width=450pt]{1.jpg}
+  \caption{\textsf{SFM10Halton\_priAsiopt}}
+\end{figure}
+
+\textbf{Step 4:} Averaging the asset price for each of the simulated paths and applying the appropriate formula of (2) and (3).
+\begin{eqnarray}
+% \nonumber % Remove numbering (before each equation)
+  Payoff_{call} &=& \max(S-X,0) \\
+  Payoff_{put} &=& \max(X-S,0)
+\end{eqnarray}
+
+\textbf{Step 5}: Averaging the payoffs for all paths  and discounting the result  to time 0.
+
+\subsection{Example}
+Example: we used the above five steps to price the Asian Call and Put options with the following parameters:
+$X = 50$,
+$\mu = 0.04$,
+$\sigma  = 0.1$,
+$r = 0.03$,
+$dt = 1/365$,
+$steps = 50$,
+$T = dt*steps$,
+$nsims = 1000$.
+Results are give by:
+\url{https://github.com/SFMWISE2016/SFM10Halton_priAsiopt}
+
+
+
+\section{Further Reading}
+\textbf{Books:}
+\begin{itemize}
+  \item Peter Jaeckel (2002). \emph{Monte Carlo Methods in Finance}. John Wiley and Sons. ISBN 0-471-49741-X.
+  \item Bruno Dupire (1998). \emph{Monte Carlo: Methodologies and Applications for Pricing and Risk Management. Risk.}
+  \item Don L. McLeish (2005). \emph{Monte Carlo Simulation \& Finance.} ISBN 0-471-67778-7.
+\end{itemize}
+
+\textbf{Journal:}
+\begin{itemize}
+  \item  \emph{``Monte Carlo Simulation".} Palisade Corporation. 2010. Retrieved 2010-09-24.
+  \item Boyle, Phelim P. \emph{``Options: A Monte Carlo Approach"}. Journal of Financial Economics, Volume (Year): 4(1977), Issue (Month): 3(May). pp. 323 $-$ 338. Retrieved 2010-09-24.、
+\end{itemize}
+
+\end{document}
